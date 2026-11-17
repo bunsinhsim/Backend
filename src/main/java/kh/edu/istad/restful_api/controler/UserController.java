@@ -1,0 +1,54 @@
+package kh.edu.istad.restful_api.controler;
+
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import kh.edu.istad.restful_api.dto.UserAddDto;
+import kh.edu.istad.restful_api.dto.UserDto;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
+import kh.edu.istad.restful_api.service.UserService;
+
+import java.util.List;
+import java.util.UUID;
+
+@RestController
+@RequestMapping("/api/v1/users")
+@RequiredArgsConstructor
+public class UserController {
+
+    private final UserService userService;
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    @PutMapping("/{id}")
+    public void updateById( @PathVariable UUID id, UserAddDto newUser){
+
+        userService.updateById(id, newUser);
+    }
+
+    // Add a new user to data
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @DeleteMapping("/{id}")
+    public void deleteById(@PathVariable UUID id){
+
+        userService.deleteById(id);
+    }
+    @GetMapping("/{id}")
+    public UserDto getById(@PathVariable UUID id){
+
+        return userService.getById(id);
+    }
+    @ResponseStatus(HttpStatus.CREATED)
+    @PostMapping
+    public UserDto addNew(@RequestBody UserAddDto userAddDto)
+    {
+
+        return userService.addNew(userAddDto);
+    }
+
+
+    @GetMapping
+    public List<UserDto> getAll(
+            @RequestParam(required = false, defaultValue = "") String keyword
+    ) {
+        return userService.getAll(keyword);
+    }
+}
