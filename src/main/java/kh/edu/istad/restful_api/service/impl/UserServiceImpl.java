@@ -23,7 +23,7 @@ import java.util.UUID;
     public void updateById(UUID id, UserAddDto userUpdateDto) { // Update this signature in UserService too
         User existingUser = userRepository.select()
                 .stream()
-                .filter(user -> user.id().equals(id))
+                .filter(user -> user.getId().equals(id))
                 .findFirst()
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
@@ -31,7 +31,7 @@ import java.util.UUID;
 
         // Keep the exact same order as your User record: (id, userName, password, fullName)
         User updatedUser = new User(
-                existingUser.id(),
+                existingUser.getId(),
                 userUpdateDto.userName(),
                 userUpdateDto.password(),
                 userUpdateDto.fullName()
@@ -41,20 +41,20 @@ import java.util.UUID;
         userRepository.select().set(index, updatedUser);
 
         new UserDto(
-                updatedUser.id(),
-                updatedUser.fullName()
+                updatedUser.getId(),
+                updatedUser.getFullName()
         );
     }
     @Override
     public void deleteById(UUID id) {
         boolean isFound = userRepository.select()
                 .stream()
-                .anyMatch(user -> user.id().equals(id));
+                .anyMatch(user -> user.getId().equals(id));
 
         IO.println("user with ID"+ id + "is Found : "+ isFound);
 
         if (isFound)
-            userRepository.select().removeIf(user -> user.id().equals(id));
+            userRepository.select().removeIf(user -> user.getId().equals(id));
         else
             throw new RuntimeException("User not Found ):");
 
@@ -64,9 +64,9 @@ import java.util.UUID;
     public UserDto getById(UUID id) {
         return userRepository.select()
                 .stream()
-                .filter(user -> user.id().equals(id))
+                .filter(user -> user.getId().equals(id))
                 .findFirst()
-                .map(user -> new UserDto(user.id(),user.fullName()))
+                .map(user -> new UserDto(user.getId(),user.getFullName()))
                 .orElseThrow(()-> new RuntimeException("user not found"));
     }
 
@@ -80,7 +80,7 @@ import java.util.UUID;
         );
 
         userRepository.select().add(user);
-        return new UserDto(user.id(), user.fullName());
+        return new UserDto(user.getId(), user.getFullName());
     }
 
 
@@ -88,10 +88,10 @@ import java.util.UUID;
     public List<UserDto> getAll(String keyword) {
         return userRepository.select()
                 .stream()
-                .filter(user -> user.fullName().toLowerCase()
+                .filter(user -> user.getFullName().toLowerCase()
                         .contains(keyword.toLowerCase())
                 )
-                .map(user -> new UserDto(user.id(), user.fullName()))
+                .map(user -> new UserDto(user.getId(), user.getFullName()))
                 .toList();
     }
 
